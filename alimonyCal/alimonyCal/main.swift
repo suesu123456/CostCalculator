@@ -65,18 +65,7 @@ var consume: [NSDictionary] = [
 //    ["name":"", "allM":"", "who":"", "share"],
 ]
 
-//var aliPay:[NSDictionary] = [
-//    ["Anne":"1013343269@qq.com"],
-//    ["Bellis":"15228804095"],
-//    ["Sue":"15868869697"],
-//    ["Tommao":"836514734@qq.com"],
-//    ["Lagel":"lagel@live.com"],
-//    ["Jiaqin":"15757181067"],
-//    ["Bo":""],
-//    ["Peach":"scdzwyxst@gmail.com"],
-//    ["Daihua":""]
-//
-//]
+
     /// 初始化
     var cloumns = xMan.count+2 //列
     var consumeCount = consume.count+2 //行
