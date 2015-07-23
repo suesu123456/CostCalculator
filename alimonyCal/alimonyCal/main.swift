@@ -45,36 +45,23 @@ extension Double {
         return NSString(format: "%\(f)f", self) as String
     }
 }
-//-------------0------1-------2------3-------4-------5-------6------7------8-----
-var xMan = ["Anne","Bellis","Sue","Tommao","Lagel","Jiaqin","Bo","Peach","Daihua"]
-var consume: [NSDictionary] = [
-    ["name":"7.4黄酒，油（毛）","allM":"20.0","who":"Tommao","share":[0,1,2,3,4,5,6]],
-    ["name":"7.4猪肉，生菜面条（毛）","allM":"13.6", "who":"Tommao", "share":[0,4,5,3,7]],
-    ["name":"7.4午餐（苏）","allM":"58.0","who":"Sue","share":[1,2,3,6,7]],
-    ["name":"7.4玉米，奶黄包（苏）","allM":"16.58","who":"Sue","share":[0,1,2,3,4,6]],
-    ["name":"7.4鸡蛋，保鲜膜（苏）", "allM":"24.0", "who":"Sue", "share":[0,1,2,3,4,5,6]],
-    ["name":"7.4浴帽，洗衣刷（苏）", "allM":"10.9", "who":"Sue", "share":[0,1,2,5]],
-    ["name":"7.5午餐（蓉）", "allM":"59.5", "who":"Bellis", "share":[0,1,3,4,6]],
-    ["name":"7.5大米（蓉）", "allM":"51.9", "who":"Bellis", "share":[0,1,2,3,4,5,6]],
-    ["name":"7.7面条（鸿）", "allM":"5.0", "who":"Anne", "share":[0,3,7,5]],
-    ["name":"7.8洁厕剂酱油，等公用（鸿）", "allM":"101.9", "who":"Anne", "share":[0,1,2,3,4,5,6]],
-    ["name":"7.10猪肉鸡翅根菜（毛）", "allM":"45.0", "who":"Tommao", "share":[2,3,4,5,6,7,8]],
-    ["name":"7.10猪肉鸡翅根菜（鸿）", "allM":"85.0", "who":"Anne", "share":[0,2,3,4,5,6,7,8]],
-    ["name":"7.10面条，香肠（戴华）", "allM":"21.6", "who":"Daihua", "share":[0,2,3,4,5,6,7,8]]
-    
-//    ["name":"", "allM":"", "who":"", "share"],
-]
 
-
+func alimoneyCal (xMan: NSArray, consume: [NSDictionary]) -> [[String]] {
+    if xMan.count <= 0 {
+        return [["没有消费者哦！"]];
+    }
+    if consume.count <= 0 {
+        return [["没有消费记录哟！"]];
+    }
     /// 初始化
-    var cloumns = xMan.count+2 //列
-    var consumeCount = consume.count+2 //行
-    var table : [[String]] = Array(count: consumeCount, repeatedValue: Array(count: cloumns, repeatedValue: "0.00"))
+    var cloumns = xMan.count + 2
+    var rows = consume.count + 2
+    var table: [[String]] = Array(count: rows, repeatedValue: Array(count: cloumns, repeatedValue: "0.00"))
     table[0][cloumns-1] = "项目（付钱人）"; table[0][cloumns-2] = "ALL"; table[consume.count+1][cloumns-1] = "总计";
     for var index = 0; index < cloumns-2; index++ {
-        table[0][index] = xMan[index] as String
+        table[0][index] = xMan[index] as! String
     }
-    for var index = 1; index < consumeCount-1; index++ {
+    for var index = 1; index < rows-1; index++ {
         table[index][cloumns-1] = consume[index-1]["name"] as! String //第一列 名称
         table[index][cloumns-2] = consume[index-1]["allM"] as! String // 第二列 总计
     }
@@ -84,17 +71,29 @@ var consume: [NSDictionary] = [
         var personNumber: Double = Double(consume[i]["share"]!.count) //参与的人数
         var moneyTemp: Double = allM / personNumber
         // 去修改table里面相对应的人的价格
-        for temp in consume[i]["share"] as! [Int]{
-            table[i+1][temp] =  moneyTemp.description //String(stringInterpolationSegment: moneyTemp)
+        var shares = consume[i]["share"] as? [Int];
+        print(shares)
+        if shares != nil {
+            for temp in consume[i]["share"] as! [Int] {
+                table[i+1][temp] =  moneyTemp.description //String(stringInterpolationSegment: moneyTemp)
+            }
+        } else {
+            for temp in consume[i]["share"] as! [String] {
+                var index = find(xMan as! [String], temp)
+                if index == nil {
+                    return [["消费者姓名不配对"]];
+                }
+                table[i+1][index!] =  moneyTemp.description
+            }
         }
     }
     //计算出总价
     for var j = 0; j < cloumns-1; j++ {
         var counts:Double = 0;
-        for var i = 0; i < consumeCount-1; i++ {
+        for var i = 0; i < rows-1; i++ {
             counts += (table[i][j] as NSString).doubleValue
         }
-        table[consumeCount-1][j] = counts.description
+        table[rows-1][j] = counts.description
     }
     // 输出报表
     var table2 : [[String]] = table
@@ -120,14 +119,14 @@ var consume: [NSDictionary] = [
 
 
     //-----------------计算出谁该给谁
-    //table[consumeCount-1][2] //第一个人的花费
+    //table[rows-1][2] //第一个人的花费
     var selfSpend:[Double] = Array(count: xMan.count, repeatedValue: 0.0); //每个人花费的数组
     var allSpend = Array(count: xMan.count, repeatedValue: ["name":"xx","ap":0.0,"fp":0.0,"sp":0.0])
     var j = 0;
     println("/******************每人支出情况，正数为收费，负数为需支出多少*******************/")
     for var i = 0; i < cloumns-2; i++ {
-        allSpend[j]["name"] = xMan[j] //人
-        allSpend[j]["fp"] =  (table[consumeCount-1][i] as NSString).doubleValue //消费
+        allSpend[j]["name"] = (xMan[j] as! NSObject) //人
+        allSpend[j]["fp"] =  (table[rows-1][i] as NSString).doubleValue //消费
         //计算支出
         for var index = 0; index < consume.count; index++ {
             if allSpend[j]["name"]as! String == consume[index]["who"]as! String { //此人有支出
@@ -180,10 +179,28 @@ var consume: [NSDictionary] = [
             }
         }
     }
+    return table2;
+}
 
+//-------------0------1-------2------3-------4-------5-------6------7------8-----
+let xMan = ["Anne","Bellis","Sue","Tommao","Lagel","Jiaqin","Bo","Peach","Daihua"];
+let consume: [NSDictionary] = [
+    ["name":"7.4黄酒，油（毛）","allM":"20.0","who":"Tommao","share":["Anne","Bellis","Sue","Tommao","Lagel","Bo","Peach"]],
+    ["name":"7.4猪肉，生菜面条（毛）","allM":"13.6", "who":"Tommao", "share":[0,4,5,3,7]],
+    ["name":"7.4午餐（苏）","allM":"58.0","who":"Sue","share":[1,2,3,6,7]],
+    ["name":"7.4玉米，奶黄包（苏）","allM":"16.58","who":"Sue","share":[0,1,2,3,4,6]],
+    ["name":"7.4鸡蛋，保鲜膜（苏）", "allM":"24.0", "who":"Sue", "share":[0,1,2,3,4,5,6]],
+    ["name":"7.4浴帽，洗衣刷（苏）", "allM":"10.9", "who":"Sue", "share":[0,1,2,5]],
+    ["name":"7.5午餐（蓉）", "allM":"59.5", "who":"Bellis", "share":[0,1,3,4,6]],
+    ["name":"7.5大米（蓉）", "allM":"51.9", "who":"Bellis", "share":[0,1,2,3,4,5,6]],
+    ["name":"7.7面条（鸿）", "allM":"5.0", "who":"Anne", "share":[0,3,7,5]],
+    ["name":"7.8洁厕剂酱油，等公用（鸿）", "allM":"101.9", "who":"Anne", "share":[0,1,2,3,4,5,6]],
+    ["name":"7.10猪肉鸡翅根菜（毛）", "allM":"45.0", "who":"Tommao", "share":[2,3,4,5,6,7,8]],
+    ["name":"7.10猪肉鸡翅根菜（鸿）", "allM":"85.0", "who":"Anne", "share":[0,2,3,4,5,6,7,8]],
+    ["name":"7.10面条，香肠（戴华）", "allM":"21.6", "who":"Daihua", "share":[0,2,3,4,5,6,7,8]]
+]
 
-
-
+alimoneyCal(xMan, consume);
 
 
 
