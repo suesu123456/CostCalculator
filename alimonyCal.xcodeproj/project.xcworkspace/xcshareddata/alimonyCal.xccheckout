@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>786E3234-DDED-4CCF-83D0-DACACEE49851</string>
+	<key>IDESourceControlProjectName</key>
+	<string>alimonyCal</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>06B08C0A9D479E7A517F56AB1B1185642AD4AE2D</key>
+		<string>https://github.com/suesu123456/-swift-alimonyCal.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>alimonyCal/alimonyCal.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>06B08C0A9D479E7A517F56AB1B1185642AD4AE2D</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/suesu123456/-swift-alimonyCal.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>06B08C0A9D479E7A517F56AB1B1185642AD4AE2D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>06B08C0A9D479E7A517F56AB1B1185642AD4AE2D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>study_github</string>
+		</dict>
+	</array>
+</dict>
+</plist>
